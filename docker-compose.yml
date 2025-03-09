@@ -10,9 +10,19 @@ services:
       - ./data:/data  # Montar un volumen local para persistencia de datos, si es necesario
       - ./models/:/root/.ollama/models/
     restart: always
-    networks:
-      - ollama-net
 
-networks:
-  ollama-net:
-    driver: bridge
+    
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:latest
+    container_name: open-webui
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./open-webui-data:/app/backend/data
+    environment:
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - WEBUI_SECRET_KEY=supersecretkey  # Cambia esto por una clave segura
+      - PORT=3000
+
+
